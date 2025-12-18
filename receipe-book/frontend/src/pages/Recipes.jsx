@@ -193,14 +193,14 @@ const Recipes = () => {
                             <span className="text-gray-500 font-medium">Found {pagination.total} recipes</span>
                         </div>
 
-                        <div className="masonry-grid mb-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                             {recipes.map((recipe, index) => (
                                 <motion.div
                                     key={recipe._id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: (index % 6) * 0.1 }}
-                                    className="masonry-item"
+                                    className="h-full"
                                 >
                                     <RecipeCard recipe={recipe} />
                                 </motion.div>

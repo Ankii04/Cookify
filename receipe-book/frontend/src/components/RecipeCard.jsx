@@ -20,7 +20,7 @@ const RecipeCard = ({ recipe }) => {
     };
 
     return (
-        <Link to={`/recipes/${recipe._id}`} className="block group">
+        <Link to={`/recipes/${recipe._id}`} className="block group h-full">
             <div className="recipe-card card-shine h-full flex flex-col">
                 {/* Image Container */}
                 <div className="relative h-64 overflow-hidden flex-shrink-0">

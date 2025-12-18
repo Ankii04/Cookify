@@ -124,7 +124,7 @@ const Home = () => {
                         {featuredRecipes.map((recipe, index) => (
                             <div
                                 key={recipe._id}
-                                className="animate-fade-in"
+                                className="animate-fade-in h-full"
                                 style={{ animationDelay: `${index * 0.1}s` }}
                             >
                                 <RecipeCard recipe={recipe} />
