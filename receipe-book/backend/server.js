@@ -22,6 +22,23 @@ const __dirname = path.dirname(__filename);
 // Initialize Express app
 const app = express();
 
+// Database connection helper
+const connectDB = async () => {
+    try {
+        if (mongoose.connection.readyState === 1) return;
+
+        if (!process.env.MONGODB_URI) {
+            console.error('❌ MONGODB_URI is missing in environment variables');
+            return;
+        }
+
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log('✅ MongoDB connected successfully');
+    } catch (error) {
+        console.error('❌ MongoDB connection error:', error.message);
+    }
+};
+
 // Middleware
 const allowedOrigins = process.env.FRONTEND_URL
     ? process.env.FRONTEND_URL.split(',')
@@ -29,7 +46,6 @@ const allowedOrigins = process.env.FRONTEND_URL
 
 app.use(cors({
     origin: function (origin, callback) {
-        // allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
             return callback(null, true);
@@ -39,8 +55,15 @@ app.use(cors({
     },
     credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Ensure DB connection for all API requests
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -63,6 +86,7 @@ app.get('/api/health', (req, res) => {
     res.json({
         success: true,
         message: 'Recipe Book API is running',
+        dbConnected: mongoose.connection.readyState === 1,
         timestamp: new Date().toISOString()
     });
 });
@@ -77,23 +101,12 @@ app.use((req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Server Error:', err.stack);
     res.status(500).json({
         success: false,
         message: err.message || 'Internal server error'
     });
 });
-
-// Database connection
-const connectDB = async () => {
-    try {
-        if (mongoose.connection.readyState === 1) return;
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('✅ MongoDB connected successfully');
-    } catch (error) {
-        console.error('❌ MongoDB connection error:', error.message);
-    }
-};
 
 // Start server (only for local development)
 const PORT = process.env.PORT || 5000;
@@ -105,11 +118,5 @@ if (process.env.NODE_ENV !== 'production') {
         });
     });
 }
-
-// Middleware to ensure DB connection on every request (Vercel optimization)
-app.use(async (req, res, next) => {
-    await connectDB();
-    next();
-});
 
 export default app;
