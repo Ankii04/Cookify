@@ -232,19 +232,51 @@ const Recipes = () => {
                                     Previous
                                 </button>
 
-                                <div className="flex items-center gap-2">
-                                    {[...Array(pagination.pages)].map((_, i) => (
-                                        <button
-                                            key={i + 1}
-                                            onClick={() => setPage(i + 1)}
-                                            className={`px-4 py-2 rounded-lg ${page === i + 1
-                                                ? 'bg-primary-600 text-white'
-                                                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
-                                                }`}
-                                        >
-                                            {i + 1}
-                                        </button>
-                                    ))}
+                                <div className="flex items-center gap-1 md:gap-2">
+                                    {/* Pagination Logic */}
+                                    {(() => {
+                                        const pages = [];
+                                        const totalPages = pagination.pages;
+                                        const current = page;
+                                        const delta = 1; // Number of pages to show before and after current
+
+                                        for (let i = 1; i <= totalPages; i++) {
+                                            if (
+                                                i === 1 || // Always show first
+                                                i === totalPages || // Always show last
+                                                (i >= current - delta && i <= current + delta) // Show neighbors
+                                            ) {
+                                                pages.push(i);
+                                            } else if (
+                                                (i === current - delta - 1) ||
+                                                (i === current + delta + 1)
+                                            ) {
+                                                pages.push('...');
+                                            }
+                                        }
+
+                                        // Remove consecutive dots
+                                        const filteredPages = pages.filter((item, index) => {
+                                            return item !== '...' || pages[index - 1] !== '...';
+                                        });
+
+                                        return filteredPages.map((p, i) => (
+                                            p === '...' ? (
+                                                <span key={`dots-${i}`} className="px-2 text-gray-400">...</span>
+                                            ) : (
+                                                <button
+                                                    key={p}
+                                                    onClick={() => setPage(p)}
+                                                    className={`w-10 h-10 flex items-center justify-center rounded-xl font-bold transition-all duration-300 ${page === p
+                                                        ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg scale-110'
+                                                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-orange-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+                                                        }`}
+                                                >
+                                                    {p}
+                                                </button>
+                                            )
+                                        ));
+                                    })()}
                                 </div>
 
                                 <button
