@@ -75,36 +75,29 @@ app.use((err, req, res, next) => {
 // Database connection
 const connectDB = async () => {
     try {
+        if (mongoose.connection.readyState === 1) return;
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('✅ MongoDB connected successfully');
-
-        // Check if database needs seeding
-        const Recipe = (await import('./models/Recipe.js')).default;
-        const recipeCount = await Recipe.countDocuments();
-
-        if (recipeCount === 0) {
-            console.log('\n⚠️  Database is empty!');
-            console.log('💡 Run "npm run seed" to populate the database with initial recipes from TheMealDB\n');
-        } else {
-            console.log(`📊 Database has ${recipeCount} recipes`);
-        }
     } catch (error) {
         console.error('❌ MongoDB connection error:', error.message);
-        process.exit(1);
     }
 };
 
-// Start server
+// Start server (only for local development)
 const PORT = process.env.PORT || 5000;
 
-const startServer = async () => {
-    await connectDB();
-
-    app.listen(PORT, () => {
-        console.log(`\n🚀 Server is running on port ${PORT}`);
-        console.log(`📍 API URL: http://localhost:${PORT}`);
-        console.log(`🏥 Health check: http://localhost:${PORT}/api/health\n`);
+if (process.env.NODE_ENV !== 'production') {
+    connectDB().then(() => {
+        app.listen(PORT, () => {
+            console.log(`\n🚀 Server is running on port ${PORT}`);
+        });
     });
-};
+}
 
-startServer();
+// Middleware to ensure DB connection on every request (Vercel optimization)
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
+
+export default app;

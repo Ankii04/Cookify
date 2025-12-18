@@ -184,7 +184,7 @@ router.post('/', protect, upload.single('image'), async (req, res) => {
 
         // Add image path if uploaded
         if (req.file) {
-            recipeData.image = `/uploads/${req.file.filename}`;
+            recipeData.image = req.file.path.startsWith('http') ? req.file.path : `/uploads/${req.file.filename}`;
         }
 
         const recipe = await Recipe.create(recipeData);
@@ -242,7 +242,7 @@ router.put('/:id', protect, upload.single('image'), async (req, res) => {
 
         // Update image if new one uploaded
         if (req.file) {
-            updateData.image = `/uploads/${req.file.filename}`;
+            updateData.image = req.file.path.startsWith('http') ? req.file.path : `/uploads/${req.file.filename}`;
         }
 
         recipe = await Recipe.findByIdAndUpdate(

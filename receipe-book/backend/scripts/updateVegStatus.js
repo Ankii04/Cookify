@@ -20,7 +20,7 @@ const updateRecipesWithVegStatus = async () => {
 
         // Mark non-vegetarian recipes
         const nonVegResult = await Recipe.updateMany(
-            { category: { $in: ['Chicken', 'Lamb', 'Seafood', 'Beef', 'Pork', 'Goat'] } },
+            { category: { $in: ['Chicken', 'mutton', 'fish'] } },
             { $set: { isVeg: false } }
         );
         console.log(`✅ Marked ${nonVegResult.modifiedCount} recipes as Non-Vegetarian`);

@@ -1,20 +1,42 @@
 import multer from 'multer';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import dotenv from 'dotenv';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
-// Configure storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads'));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'recipe-' + uniqueSuffix + path.extname(file.originalname));
-    }
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// Configure Storage based on environment
+let storage;
+
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+    storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+            folder: 'recipe-book',
+            allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
+            public_id: (req, file) => 'recipe-' + Date.now()
+        }
+    });
+} else {
+    // Fallback for local development if Cloudinary is not configured
+    storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'uploads/');
+        },
+        filename: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, 'recipe-' + uniqueSuffix + path.extname(file.originalname));
+        }
+    });
+}
 
 // File filter
 const fileFilter = (req, file, cb) => {
@@ -25,16 +47,13 @@ const fileFilter = (req, file, cb) => {
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb(new Error('Only image files are allowed (jpeg, jpg, png, gif, webp)'));
+        cb(new Error('Only image files are allowed!'));
     }
 };
 
-// Configure multer
 const upload = multer({
     storage: storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
-    },
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter
 });
 
