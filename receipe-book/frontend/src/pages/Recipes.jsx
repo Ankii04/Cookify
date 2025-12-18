@@ -15,7 +15,9 @@ const Recipes = () => {
     // Filters
     const [search, setSearch] = useState(searchParams.get('search') || '');
     const [category, setCategory] = useState(searchParams.get('category') || '');
+    const [cuisine, setCuisine] = useState(searchParams.get('cuisine') || '');
     const [isVeg, setIsVeg] = useState(searchParams.get('isVeg') || '');
+    const [cuisines, setCuisines] = useState([]);
     const [sort, setSort] = useState(searchParams.get('sort') || 'newest');
     const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
 
@@ -50,20 +52,27 @@ const Recipes = () => {
 
     useEffect(() => {
         fetchRecipes();
-    }, [search, category, isVeg, sort, page]);
+    }, [search, category, cuisine, isVeg, sort, page]);
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchFilters = async () => {
             try {
-                const res = await recipeAPI.getCategories();
-                if (res.data.success) {
-                    setCategories(res.data.data);
+                const [categoriesRes, cuisinesRes] = await Promise.all([
+                    recipeAPI.getCategories(),
+                    recipeAPI.getCuisines()
+                ]);
+
+                if (categoriesRes.data.success) {
+                    setCategories(categoriesRes.data.data);
+                }
+                if (cuisinesRes.data.success) {
+                    setCuisines(cuisinesRes.data.data);
                 }
             } catch (err) {
-                console.error('Error fetching categories:', err);
+                console.error('Error fetching filters:', err);
             }
         };
-        fetchCategories();
+        fetchFilters();
     }, []);
 
     const fetchRecipes = async () => {
@@ -74,6 +83,7 @@ const Recipes = () => {
                 limit: 12,
                 ...(search && { search }),
                 ...(category && { category }),
+                ...(cuisine && { cuisine }),
                 ...(isVeg && { isVeg }),
                 ...(sort && { sort })
             };
@@ -109,6 +119,9 @@ const Recipes = () => {
             case 'category':
                 setCategory(value);
                 break;
+            case 'cuisine':
+                setCuisine(value);
+                break;
             case 'isVeg':
                 setIsVeg(value);
                 break;
@@ -123,6 +136,7 @@ const Recipes = () => {
     const clearFilters = () => {
         setSearch('');
         setCategory('');
+        setCuisine('');
         setIsVeg('');
         setSort('newest');
         setPage(1);
@@ -181,6 +195,23 @@ const Recipes = () => {
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>
                                 <option value="rating">Highest Rated</option>
+                            </select>
+                        </div>
+
+                        {/* Cuisine Filter */}
+                        <div>
+                            <label className="label">Cuisine</label>
+                            <select
+                                value={cuisine}
+                                onChange={(e) => handleFilterChange('cuisine', e.target.value)}
+                                className="input-field"
+                            >
+                                <option value="">All Cuisines</option>
+                                {cuisines.map((c) => (
+                                    <option key={c} value={c}>
+                                        {c}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 

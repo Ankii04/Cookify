@@ -29,6 +29,7 @@ export const recipeAPI = {
     getById: (id) => api.get(`/api/recipes/${id}`),
     getFeatured: () => api.get('/api/recipes/featured'),
     getCategories: () => api.get('/api/recipes/categories'),
+    getCuisines: () => api.get('/api/recipes/cuisines'),
     create: (formData) => api.post('/api/recipes', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),

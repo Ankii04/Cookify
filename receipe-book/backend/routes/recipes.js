@@ -130,6 +130,25 @@ router.get('/categories', async (req, res) => {
     }
 });
 
+// @route   GET /api/recipes/cuisines
+// @desc    Get all unique cuisines
+// @access  Public
+router.get('/cuisines', async (req, res) => {
+    try {
+        const cuisines = await Recipe.distinct('cuisine');
+
+        res.json({
+            success: true,
+            data: cuisines.filter(c => c && c.trim() !== '')
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
 // @route   GET /api/recipes/:id
 // @desc    Get single recipe by ID
 // @access  Public
