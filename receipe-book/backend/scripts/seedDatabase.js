@@ -21,8 +21,8 @@ const fetchTheMealDBRecipes = async () => {
             const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`);
 
             if (response.data.meals) {
-                // Get first 8 recipes from each category
-                const meals = response.data.meals.slice(0, 10);
+                // Get up to 20 recipes from each category
+                const meals = response.data.meals.slice(0, 20);
 
                 for (const meal of meals) {
                     // Fetch detailed recipe information
@@ -134,7 +134,7 @@ const fetchSpoonacularRecipes = async () => {
                 params: {
                     apiKey: process.env.SPOONACULAR_API_KEY,
                     cuisine: cuisine,
-                    number: 5, // 5 recipes per cuisine
+                    number: 20, // 20 recipes per cuisine
                     addRecipeInformation: true,
                     fillIngredients: true
                 },
@@ -219,15 +219,6 @@ const seedDatabase = async () => {
         // Connect to MongoDB
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('✅ Connected to MongoDB');
-
-        // Check if recipes already exist
-        const existingRecipes = await Recipe.countDocuments();
-
-        if (existingRecipes > 0) {
-            console.log(`ℹ️  Database already has ${existingRecipes} recipes. Skipping seed.`);
-            console.log('💡 To re-seed, delete all recipes first or drop the collection.');
-            process.exit(0);
-        }
 
         // Fetch from both APIs
         const [themealdbRecipes, spoonacularRecipes] = await Promise.all([
