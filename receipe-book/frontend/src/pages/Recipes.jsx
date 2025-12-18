@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Recipes = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [recipes, setRecipes] = useState([]);
-    const [categories] = useState(['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Dessert', 'Appetizer', 'Main Course', 'Beverages']);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState({});
 
@@ -51,6 +51,20 @@ const Recipes = () => {
     useEffect(() => {
         fetchRecipes();
     }, [search, category, isVeg, sort, page]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await recipeAPI.getCategories();
+                if (res.data.success) {
+                    setCategories(res.data.data);
+                }
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const fetchRecipes = async () => {
         setLoading(true);

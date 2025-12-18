@@ -6,7 +6,7 @@ import { SkeletonCard } from '../components/Skeletons';
 
 const Home = () => {
     const [featuredRecipes, setFeaturedRecipes] = useState([]);
-    const [categories] = useState(['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Dessert', 'Appetizer', 'Main Course', 'Beverages']);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isVegOnly, setIsVegOnly] = useState('all');
 
@@ -25,10 +25,23 @@ const Home = () => {
 
         window.addEventListener('vegFilterChanged', handleVegFilterChange);
 
+        fetchCategories();
+
         return () => {
             window.removeEventListener('vegFilterChanged', handleVegFilterChange);
         };
     }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await recipeAPI.getCategories();
+            if (res.data.success) {
+                setCategories(res.data.data);
+            }
+        } catch (err) {
+            console.error('Error fetching categories:', err);
+        }
+    };
 
     const fetchData = async (vegFilter = isVegOnly) => {
         try {
@@ -264,7 +277,9 @@ const getCategoryEmoji = (category) => {
         'Rice': '🍚',
         'Roti': '🫓',
         'Biryani': '🍛',
-        'Curry': '🍛'
+        'Curry': '🍛',
+        'Beef': '🥩',
+        'Pork': '🥓'
     };
     return emojis[category] || '🍽️';
 };
