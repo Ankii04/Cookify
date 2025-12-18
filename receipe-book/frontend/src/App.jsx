@@ -43,12 +43,12 @@ function App() {
             {/* Footer */}
             <footer className="bg-white dark:bg-gray-800 border-t dark:border-gray-700 mt-16">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                  <div className="flex items-center gap-3 font-bold text-lg dark:text-white">
-                    <span className="text-2xl">👨‍🍳</span> Cookify
-                  </div>
-                  <p className="text-gray-500 text-sm">
-                    © {new Date().getFullYear()} Cookify. A community-driven recipe platform.
+                <div className="text-center text-gray-600 dark:text-gray-400">
+                  <p className="mb-2">
+                    <span className="text-2xl">👨‍🍳</span> RecipeHub
+                  </p>
+                  <p className="text-sm">
+                    © {new Date().getFullYear()} RecipeHub. A community-driven recipe platform.
                   </p>
                   <p className="text-xs mt-2">
                     Built with React, Node.js, Express & MongoDB
