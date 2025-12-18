@@ -17,7 +17,8 @@ const AddRecipe = () => {
         servings: '4',
         ingredients: [{ name: '', measure: '' }],
         steps: [''],
-        tags: []
+        tags: [],
+        isVeg: true
     });
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
@@ -50,7 +51,8 @@ const AddRecipe = () => {
                     servings: recipe.servings.toString(),
                     ingredients: recipe.ingredients,
                     steps: recipe.steps,
-                    tags: recipe.tags || []
+                    tags: recipe.tags || [],
+                    isVeg: recipe.isVeg
                 });
                 if (recipe.image) {
                     setImagePreview(
@@ -166,6 +168,7 @@ const AddRecipe = () => {
             data.append('ingredients', JSON.stringify(formData.ingredients));
             data.append('steps', JSON.stringify(formData.steps));
             data.append('tags', JSON.stringify(formData.tags));
+            data.append('isVeg', formData.isVeg);
 
             if (image) {
                 data.append('image', image);
@@ -220,12 +223,49 @@ const AddRecipe = () => {
                             onChange={handleImageChange}
                             className="input-field"
                         />
+                        {/* Veg/Non-Veg Selection */}
+                        <div className="flex gap-6 p-4 bg-orange-50 dark:bg-gray-700/50 rounded-xl border border-orange-100 dark:border-gray-600">
+                            <label className="flex items-center cursor-pointer group">
+                                <input
+                                    type="radio"
+                                    name="isVeg"
+                                    checked={formData.isVeg === true}
+                                    onChange={() => setFormData({ ...formData, isVeg: true })}
+                                    className="hidden"
+                                />
+                                <div className={`w-6 h-6 border-2 rounded-full mr-2 flex items-center justify-center transition-all ${formData.isVeg === true ? 'border-green-600 bg-green-600' : 'border-gray-400'}`}>
+                                    {formData.isVeg === true && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                </div>
+                                <span className={`font-semibold ${formData.isVeg === true ? 'text-green-600' : 'text-gray-500'}`}>Veg 🥗</span>
+                            </label>
+
+                            <label className="flex items-center cursor-pointer group">
+                                <input
+                                    type="radio"
+                                    name="isVeg"
+                                    checked={formData.isVeg === false}
+                                    onChange={() => setFormData({ ...formData, isVeg: false })}
+                                    className="hidden"
+                                />
+                                <div className={`w-6 h-6 border-2 rounded-full mr-2 flex items-center justify-center transition-all ${formData.isVeg === false ? 'border-red-600 bg-red-600' : 'border-gray-400'}`}>
+                                    {formData.isVeg === false && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                </div>
+                                <span className={`font-semibold ${formData.isVeg === false ? 'text-red-600' : 'text-gray-500'}`}>Non-Veg 🍖</span>
+                            </label>
+                        </div>
+
+                        {/* Image Preview */}
                         {imagePreview && (
-                            <img
-                                src={imagePreview}
-                                alt="Preview"
-                                className="mt-4 w-full h-64 object-cover rounded-lg"
-                            />
+                            <div className="relative group">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="w-full h-64 object-cover rounded-xl shadow-lg"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                                    <span className="text-white font-medium">Click to change image</span>
+                                </div>
+                            </div>
                         )}
                     </div>
 

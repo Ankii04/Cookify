@@ -40,8 +40,10 @@ router.get('/', async (req, res) => {
         }
 
         // Filter by isVeg (Veg/Non-Veg)
-        if (req.query.isVeg) {
-            query.isVeg = req.query.isVeg === 'true';
+        if (req.query.isVeg === 'true') {
+            query.isVeg = true;
+        } else if (req.query.isVeg === 'false') {
+            query.isVeg = false;
         }
 
         // Filter by creator (for profiles)
@@ -177,10 +179,14 @@ router.post('/', protect, upload.single('image'), async (req, res) => {
             difficulty,
             servings: parseInt(servings),
             tags: parsedTags,
-            isVeg: isVeg === 'true' || isVeg === true,
             createdBy: req.user._id,
             source: 'user'
         };
+
+        // Add isVeg only if provided, otherwise let Mongoose default handle it
+        if (isVeg !== undefined) {
+            recipeData.isVeg = isVeg === 'true' || isVeg === true;
+        }
 
         // Add image path if uploaded
         if (req.file) {
@@ -236,9 +242,12 @@ router.put('/:id', protect, upload.single('image'), async (req, res) => {
             cookingTime: parseInt(cookingTime),
             difficulty,
             servings: parseInt(servings),
-            tags: typeof tags === 'string' ? JSON.parse(tags) : tags,
-            isVeg: isVeg === 'true' || isVeg === true
+            tags: typeof tags === 'string' ? JSON.parse(tags) : tags
         };
+
+        if (isVeg !== undefined) {
+            updateData.isVeg = isVeg === 'true' || isVeg === true;
+        }
 
         // Update image if new one uploaded
         if (req.file) {
