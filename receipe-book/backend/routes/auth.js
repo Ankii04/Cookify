@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -142,7 +143,7 @@ router.get('/me', protect, async (req, res) => {
 // @access  Public
 router.get('/user/:id', async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('name bio role createdAt');
+        const user = await User.findById(req.params.id).select('name bio profileImage role createdAt');
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -152,6 +153,51 @@ router.get('/user/:id', async (req, res) => {
         res.json({
             success: true,
             data: user
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// @route   PUT /api/auth/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', protect, upload.single('profileImage'), async (req, res) => {
+    try {
+        const { name, bio } = req.body;
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Update fields
+        if (name) user.name = name;
+        if (bio !== undefined) user.bio = bio;
+
+        // Update profile image if uploaded
+        if (req.file) {
+            user.profileImage = req.file.path; // Cloudinary URL
+        }
+
+        await user.save();
+
+        res.json({
+            success: true,
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                bio: user.bio,
+                profileImage: user.profileImage,
+                role: user.role
+            }
         });
     } catch (error) {
         res.status(500).json({

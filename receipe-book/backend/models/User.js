@@ -20,6 +20,15 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long']
   },
+  profileImage: {
+    type: String,
+    default: null
+  },
+  bio: {
+    type: String,
+    default: '',
+    maxlength: [500, 'Bio cannot exceed 500 characters']
+  },
   favorites: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Recipe'
