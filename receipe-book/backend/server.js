@@ -81,6 +81,25 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/suggestions', suggestionRoutes);
 app.use('/api/search', searchRoutes);
 
+// Root route - API welcome message
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Welcome to Cookiify API',
+        version: '1.0.0',
+        endpoints: {
+            health: '/api/health',
+            auth: '/api/auth/*',
+            recipes: '/api/recipes/*',
+            reviews: '/api/reviews/*',
+            suggestions: '/api/suggestions/*',
+            search: '/api/search/*'
+        },
+        documentation: 'Visit the frontend at https://cookiify.vercel.app'
+    });
+});
+
+
 // Health check route
 app.get('/api/health', (req, res) => {
     res.json({
