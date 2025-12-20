@@ -45,10 +45,10 @@ function App() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                   <div className="flex items-center gap-3 font-bold text-lg dark:text-white">
-                    <span className="text-2xl">👨‍🍳</span> Cookify
+                    <span className="text-2xl">👨‍🍳</span> Cookiify
                   </div>
                   <p className="text-gray-500 text-sm">
-                    © {new Date().getFullYear()} Cookify. A community-driven recipe platform.
+                    © {new Date().getFullYear()} Cookiify. A community-driven recipe platform.
                   </p>
                   <p className="text-xs mt-2">
                     Built with React, Node.js, Express & MongoDB

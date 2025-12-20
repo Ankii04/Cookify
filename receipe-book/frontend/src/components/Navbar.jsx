@@ -68,7 +68,7 @@ const Navbar = () => {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-2xl font-black tracking-tight leading-none bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-500 bg-clip-text text-transparent">
-                                Cookify
+                                Cookiify
                             </span>
                             <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 dark:text-gray-400 leading-tight">
                                 Taste the World
