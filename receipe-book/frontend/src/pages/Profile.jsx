@@ -126,21 +126,21 @@ const Profile = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-red-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 pb-20">
             {/* Enhanced Header / Cover with Gradient */}
-            <div className="relative h-96 overflow-hidden">
+            <div className="relative h-[28rem]">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-red-500 to-pink-600">
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-4 h-full relative">
-                    <div className="absolute -bottom-32 left-4 md:left-8 flex flex-col md:flex-row items-start md:items-end gap-6">
+                <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-center">
+                    <div className="text-center">
                         {/* Profile Image with Upload */}
-                        <div className="relative group">
+                        <div className="relative group inline-block mb-6">
                             <motion.div
-                                className="w-40 h-40 md:w-48 md:h-48 rounded-3xl bg-white p-2 shadow-2xl border-4 border-white dark:border-gray-800 dark:bg-gray-800"
-                                whileHover={{ scale: 1.02 }}
+                                className="w-48 h-48 md:w-56 md:h-56 rounded-full bg-white p-3 shadow-2xl border-4 border-white dark:border-gray-800 dark:bg-gray-800"
+                                whileHover={{ scale: 1.05 }}
                                 transition={{ type: "spring", stiffness: 300 }}
                             >
-                                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-orange-100 to-red-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden relative">
+                                <div className="w-full h-full rounded-full bg-gradient-to-br from-orange-100 to-red-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden relative">
                                     {displayImage ? (
                                         <img
                                             src={displayImage}
@@ -148,12 +148,12 @@ const Profile = () => {
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <span className="text-6xl">👨‍🍳</span>
+                                        <span className="text-7xl">👨‍🍳</span>
                                     )}
 
                                     {isOwnProfile && (
-                                        <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center">
-                                            <FiCamera className="text-white text-3xl" />
+                                        <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center rounded-full">
+                                            <FiCamera className="text-white text-4xl" />
                                             <input
                                                 type="file"
                                                 accept="image/*"
@@ -166,73 +166,90 @@ const Profile = () => {
                                 </div>
                             </motion.div>
                             {isEditing && imageFile && (
-                                <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-2">
-                                    <FiUpload className="text-sm" />
+                                <div className="absolute top-0 right-0 bg-green-500 text-white rounded-full p-3 shadow-lg">
+                                    <FiUpload className="text-xl" />
                                 </div>
                             )}
                         </div>
 
-                        {/* Name and Date */}
-                        <div className="mb-6 flex-1">
+                        {/* Name and Info Card */}
+                        <motion.div
+                            className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl max-w-2xl mx-auto"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                        >
                             {isEditing ? (
                                 <input
                                     type="text"
                                     value={editData.name}
                                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                                    className="text-4xl font-black text-white drop-shadow-lg bg-white/20 backdrop-blur-sm border-2 border-white/50 rounded-xl px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-white"
+                                    className="text-4xl md:text-5xl font-black text-white drop-shadow-lg bg-white/20 backdrop-blur-sm border-2 border-white/50 rounded-xl px-6 py-3 w-full text-center focus:outline-none focus:ring-2 focus:ring-white"
                                     placeholder="Your name"
                                 />
                             ) : (
-                                <h1 className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">{profile.name}</h1>
+                                <h1 className="text-4xl md:text-6xl font-black text-white drop-shadow-lg mb-4">{profile.name}</h1>
                             )}
-                            <p className="text-orange-100 font-medium mt-2 flex items-center gap-2">
-                                <span className="text-2xl">📅</span>
-                                Joined {new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                            </p>
-                        </div>
 
-                        {/* Edit Button */}
-                        {isOwnProfile && (
-                            <div className="mb-6">
-                                {!isEditing ? (
-                                    <motion.button
-                                        onClick={() => setIsEditing(true)}
-                                        className="btn-primary flex items-center gap-2 shadow-xl"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <FiEdit2 /> Edit Profile
-                                    </motion.button>
-                                ) : (
-                                    <div className="flex gap-3">
-                                        <motion.button
-                                            onClick={handleUpdateProfile}
-                                            disabled={uploading}
-                                            className="btn-primary flex items-center gap-2 shadow-xl disabled:opacity-50"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            <FiSave /> {uploading ? 'Saving...' : 'Save'}
-                                        </motion.button>
-                                        <motion.button
-                                            onClick={cancelEdit}
-                                            disabled={uploading}
-                                            className="btn-secondary flex items-center gap-2 shadow-xl"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            <FiX /> Cancel
-                                        </motion.button>
-                                    </div>
-                                )}
+                            <div className="flex items-center justify-center gap-6 text-orange-100 font-medium mt-4 flex-wrap">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl">📅</span>
+                                    <span>Joined {new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl">📚</span>
+                                    <span>{recipes.length} Recipes</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="px-3 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full text-sm font-bold uppercase tracking-wider shadow-lg">
+                                        {profile.role}
+                                    </span>
+                                </div>
                             </div>
-                        )}
+
+                            {/* Edit Button */}
+                            {isOwnProfile && (
+                                <div className="mt-6">
+                                    {!isEditing ? (
+                                        <motion.button
+                                            onClick={() => setIsEditing(true)}
+                                            className="btn-primary flex items-center gap-2 shadow-xl mx-auto"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            <FiEdit2 /> Edit Profile
+                                        </motion.button>
+                                    ) : (
+                                        <div className="flex gap-3 justify-center">
+                                            <motion.button
+                                                onClick={handleUpdateProfile}
+                                                disabled={uploading}
+                                                className="btn-primary flex items-center gap-2 shadow-xl disabled:opacity-50"
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                <FiSave /> {uploading ? 'Saving...' : 'Save'}
+                                            </motion.button>
+                                            <motion.button
+                                                onClick={cancelEdit}
+                                                disabled={uploading}
+                                                className="btn-secondary flex items-center gap-2 shadow-xl"
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                <FiX /> Cancel
+                                            </motion.button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </motion.div>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 mt-40">
+            <div className="max-w-7xl mx-auto px-4 mt-8">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Enhanced Sidebar */}
                     <div className="lg:col-span-1">
@@ -264,22 +281,6 @@ const Profile = () => {
                                 </p>
                             )}
 
-                            <div className="mt-8 pt-8 border-t border-orange-100 dark:border-gray-700 space-y-4">
-                                <div className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-700 dark:to-gray-600">
-                                    <span className="text-gray-600 dark:text-gray-300 font-medium flex items-center gap-2">
-                                        <span className="text-xl">📚</span> Recipes
-                                    </span>
-                                    <span className="font-black text-2xl bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{recipes.length}</span>
-                                </div>
-                                <div className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-700 dark:to-gray-600">
-                                    <span className="text-gray-600 dark:text-gray-300 font-medium flex items-center gap-2">
-                                        <span className="text-xl">⭐</span> Role
-                                    </span>
-                                    <span className="px-3 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg text-sm font-bold uppercase tracking-wider shadow-lg">
-                                        {profile.role}
-                                    </span>
-                                </div>
-                            </div>
                         </motion.div>
                     </div>
 
